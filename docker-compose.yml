@@ -1,0 +1,17 @@
+version: "3.9"
+
+networks:
+  monitoring:
+    driver: bridge
+
+services:
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8080:80"
+      - "8082:82"
+      - "8084:84"
+    environment:
+      - HTTP_PORT=80
+      - GRPC_PORT=82
