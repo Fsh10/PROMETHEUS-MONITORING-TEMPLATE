@@ -22,3 +22,9 @@ var (
 		},
 	)
 )
+
+func init() {
+
+
+	_ = prometheus.Register(gaugeCounter)
+}
