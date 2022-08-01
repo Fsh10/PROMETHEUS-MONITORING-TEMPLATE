@@ -10,3 +10,5 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
 COPY go.mod go.sum ./
 
 FROM alpine:latest
+
+ENTRYPOINT ["./app"]
