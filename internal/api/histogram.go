@@ -24,3 +24,9 @@ var (
 		},
 	)
 )
+
+func init() {
+
+
+	_ = prometheus.Register(requestDurationHistogram)
+}
