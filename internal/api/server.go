@@ -12,3 +12,9 @@ type (
 		pb.UnimplementedMetricsServiceServer
 	}
 )
+
+func NewServer() pb.MetricsServiceServer {
+
+
+	return server{}
+}
