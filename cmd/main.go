@@ -41,3 +41,62 @@ const (
 
 
 )
+
+func main() {
+
+
+	httpPort := getEnv("HTTP_PORT", defaultHTTPPort)
+	grpcPort := getEnv("GRPC_PORT", defaultGRPCPort)
+	metricsPort := getEnv("METRICS_PORT", defaultMetricsPort)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	errCh := make(chan error, 3)
+
+	go func() {
+		if err := runHTTP(ctx, httpPort); err != nil {
+			errCh <- fmt.Errorf("HTTP server error: %w", err)
+		}
+	}()
+
+	go func() {
+		if err := runGRPC(ctx, grpcPort); err != nil {
+			errCh <- fmt.Errorf("gRPC server error: %w", err)
+		}
+	}()
+
+	go func() {
+		if err := runMetrics(ctx, metricsPort); err != nil {
+			errCh <- fmt.Errorf("metrics server error: %w", err)
+		}
+	}()
+
+	stopCh := make(chan os.Signal, 1)
+	signal.Notify(stopCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	select {
+	case sig := <-stopCh:
+		log.Printf("Received signal: %v, shutting down gracefully...", sig)
+		cancel()
+
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		defer shutdownCancel()
+
+		// Wait for all servers to shutdown
+		done := make(chan struct{})
+		go func() {
+			time.Sleep(shutdownTimeout)
+			close(done)
+		}()
+
+		select {
+		case <-done:
+			log.Println("Shutdown completed")
+		case <-shutdownCtx.Done():
+			log.Println("Shutdown timeout exceeded")
+		}
+	case err := <-errCh:
+		log.Fatalf("Server error: %v", err)
+	}
+}
