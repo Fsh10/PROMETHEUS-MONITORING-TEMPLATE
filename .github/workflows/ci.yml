@@ -11,3 +11,21 @@ env:
   DOCKER_BUILDKIT: 1
 
 jobs:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
