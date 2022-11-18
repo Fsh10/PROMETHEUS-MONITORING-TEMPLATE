@@ -28,3 +28,9 @@ func init() {
 
 	_ = prometheus.Register(gaugeCounter)
 }
+
+func (s server) Gauge(context.Context, *emptypb.Empty) (*pb.BaseResponse, error) {
+	num := rng.Float64() * 100
+	gaugeCounter.Set(num)
+	return &pb.BaseResponse{Status: "ok"}, nil
+}
