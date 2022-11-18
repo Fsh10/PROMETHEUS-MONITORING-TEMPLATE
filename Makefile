@@ -15,3 +15,15 @@ generate:
 		api/metrics.proto
 
 .PHONY: build
+		api/metrics.proto
+
+.PHONY: build
+build: generate
+	@echo "Building application..."
+	@mkdir -p pkg/metrics
+	@protoc \
+		--go_out=pkg/metrics --go_opt=paths=import \
+		--go-grpc_out=pkg/metrics --go-grpc_opt=paths=import \
+		api/metrics.proto
+
+.PHONY: build
