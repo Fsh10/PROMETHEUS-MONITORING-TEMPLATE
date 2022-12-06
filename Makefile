@@ -40,3 +40,13 @@ build-local: generate
 .PHONY: build-local
 build-local: generate
 	@echo "Building application for local platform..."
+	@go build -o bin/app cmd/main.go
+
+.PHONY: run
+run: build-local
+	@echo "Running application..."
+	@./bin/app
+
+.PHONY: test
+test:
+	@echo "Running tests..."
