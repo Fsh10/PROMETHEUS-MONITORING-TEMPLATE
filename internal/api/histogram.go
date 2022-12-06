@@ -30,3 +30,15 @@ func init() {
 
 	_ = prometheus.Register(requestDurationHistogram)
 }
+
+func (s server) Histogram(ctx context.Context, _ *emptypb.Empty) (*pb.BaseResponse, error) {
+	start := time.Now()
+	
+	// Simulate some work
+	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+	
+	duration := time.Since(start).Seconds()
+	requestDurationHistogram.Observe(duration)
+	
+	return &pb.BaseResponse{Status: "ok"}, nil
+}
