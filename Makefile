@@ -50,3 +50,21 @@ run: build-local
 .PHONY: test
 test:
 	@echo "Running tests..."
+
+.PHONY: test
+test:
+	@echo "Running tests..."
+	@go test -v ./...
+
+.PHONY: lint
+lint:
+	@echo "Running linter..."
+	@golangci-lint run || echo "golangci-lint not installed, skipping..."
+
+.PHONY: fmt
+fmt:
+	@echo "Formatting code..."
+	@go fmt ./...
+
+	@echo "Running linter..."
+	@golangci-lint run || echo "golangci-lint not installed, skipping..."
