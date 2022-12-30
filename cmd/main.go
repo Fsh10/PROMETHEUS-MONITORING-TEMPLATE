@@ -138,3 +138,37 @@ func runHTTP(ctx context.Context, port string) error {
 	}
 	return nil
 }
+
+func runGRPC(ctx context.Context, port string) error {
+	grpcServer := grpc.NewServer()
+	apiServer := api.NewServer()
+
+	go func() {
+		<-ctx.Done()
+		stopped := make(chan struct{})
+		go func() {
+			grpcServer.GracefulStop()
+			close(stopped)
+		}()
+
+		select {
+		case <-stopped:
+		case <-time.After(5 * time.Second):
+			grpcServer.Stop()
+		}
+	}()
+
+	metrics.RegisterMetricsServiceServer(grpcServer, apiServer)
+	reflection.Register(grpcServer)
+
+	listen, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		return fmt.Errorf("failed to listen on port %s: %w", port, err)
+	}
+
+	log.Printf("gRPC server starting on port %s", port)
+	if err := grpcServer.Serve(listen); err != nil {
+		return fmt.Errorf("gRPC server error: %w", err)
+	}
+	return nil
+}
