@@ -23,3 +23,9 @@ var (
 		},
 	)
 )
+
+func init() {
+
+
+	_ = prometheus.Register(requestSizeSummary)
+}
