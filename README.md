@@ -873,4 +873,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 
 
-Thanks dedveloper community for template of this project!
+Thanks developers community for template of this project!
